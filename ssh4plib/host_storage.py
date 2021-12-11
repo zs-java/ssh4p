@@ -13,14 +13,6 @@ class Host:
         self.password = opts.get('password', None)
         self.proxy = opts.get('proxy', None)
 
-    # def __init__(self, dict_data: dict):
-    #     self.name = dict_data.get('name', None)
-    #     self.host = dict_data.get('host', None)
-    #     self.port = dict_data.get('port', None)
-    #     self.user = dict_data.get('user', None)
-    #     self.password = dict_data.get('password', None)
-    #     self.proxy = dict_data.get('proxy', None)
-
     @staticmethod
     def parse_dict(dict_data: dict):
         pass
@@ -49,6 +41,12 @@ class HostStorage(object):
     @staticmethod
     def get(name: str) -> Host:
         return HostStorage.all().get(name, None)
+
+    @staticmethod
+    def save(host: Host):
+        host_map = HostStorage.all()
+        host_map[host.name] = host
+        HostStorage.saveBatch(list(host_map.values()))
 
     @staticmethod
     def saveBatch(host_list: list):
