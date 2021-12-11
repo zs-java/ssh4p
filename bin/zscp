@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+
+import os
+import sys
+
+parent, bin_dir = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))
+if os.path.exists(os.path.join(parent, 'ssh4plib')):
+    sys.path.insert(0, parent)
+
+import pexpect
+from ssh4plib.host_storage import HostStorage, Host
+from ssh4plib import utils
+
+
+def getParam(key: str) -> (str, Host):
+    if not (key.__contains__(':')):
+        return key, None
+    arr = key.split(':')
+    name = arr[0]
+    path = arr[1]
+    host = HostStorage.get(name)
+
+    key = '%s@%s:%s' % (host.user, host.host, path)
+    return key, host
+
+
+def main(args):
+    opts = list(filter(lambda v: str(v).startswith('-'), args))
+    params = list(filter(lambda v: not (str(v).startswith('-')), args))
+    if len(params) != 2:
+        print('command error!')
+        sys.exit()
+
+    source, sourceHost = getParam(params[0])
+    target, targetHost = getParam(params[1])
+    if (sourceHost is not None and targetHost is not None) or (sourceHost is None and targetHost is None):
+        print("command error！")
+        sys.exit()
+
+    host = sourceHost if sourceHost is not None else targetHost
+    shell = "scp %s -P %s %s %s" % (' '.join(opts), host.port, source, target)
+    print(shell)
+    process = pexpect.spawn(shell)
+    utils.ssh_login(process, host)
+    process.interact()
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
