@@ -99,7 +99,7 @@ class Manager(object):
         opts = parse.parse_args(args)
         host = Host(name=opts.name, host=opts.host, port=opts.port, user=opts.user, password=opts.password, proxy=opts.proxy)
         if host.password is None:
-            host.password = Manager.__input_param("Host Password:", password=True)
+            host.password = Manager.__input_param("Host Password", password=True)
 
         HostStorage.save(host)
         print("save host[%s] successfully" % opts.name)
