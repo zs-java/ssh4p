@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+
+import os
+import sys
+
+parent, bin_dir = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))
+if os.path.exists(os.path.join(parent, 'ssh4plib')):
+    sys.path.insert(0, parent)
+
+import pexpect
+from ssh4plib.host_storage import HostStorage
+from ssh4plib import utils
+
+
+def main(args):
+    if len(args) == 0:
+        print("not found host name!")
+        sys.exit()
+
+    name = args[0]
+    host = HostStorage.get(name)
+    if host is None:
+        print('config key %s is not found!' % name)
+        sys.exit(0)
+
+    ssh_shell = 'ssh -p %s %s@%s' % (host.port, host.user, host.host)
+    print(ssh_shell)
+    process = pexpect.spawn(ssh_shell)
+    utils.ssh_login(process, host)
+    process.interact()
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

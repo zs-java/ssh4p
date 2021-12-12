@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+
+import os
+import sys
+
+parent, bin_dir = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))
+if os.path.exists(os.path.join(parent, 'ssh4plib')):
+    sys.path.insert(0, parent)
+
+from ssh4plib.manager import Manager
+
+
+def main(args):
+    if len(args) == 0:
+        print('not found operation!')
+        sys.exit()
+
+    opt = args[0]
+    if not(hasattr(Manager, opt)):
+        print('unknown operation: ' + opt)
+        sys.exit()
+
+    opt_func = getattr(Manager, opt)
+    opt_func(args[1:])
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
