@@ -8,7 +8,6 @@ parent, bin_dir = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))
 if os.path.exists(os.path.join(parent, 'ssh4plib')):
     sys.path.insert(0, parent)
 
-import pexpect
 from ssh4plib.host_storage import HostStorage, Host
 from ssh4plib import utils
 
@@ -41,7 +40,7 @@ def main(args):
     host = sourceHost if sourceHost is not None else targetHost
     shell = "scp %s -P %s %s %s" % (' '.join(opts), host.port, source, target)
     print(shell)
-    process = pexpect.spawn(shell)
+    process = utils.spawn(shell)
     utils.ssh_login(process, host)
     process.interact()
 
