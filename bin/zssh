@@ -1,8 +1,12 @@
 #!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
 # -*- Mode: python -*-
 
 import os
 import sys
+
+import argcomplete
+import argparse
 
 parent, bin_dir = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))
 if os.path.exists(os.path.join(parent, 'ssh4plib')):
@@ -13,11 +17,17 @@ from ssh4plib import utils
 
 
 def main(args):
-    if len(args) == 0:
-        print("not found host name!")
-        sys.exit()
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("h", choices=HostStorage.all().keys())
+    argcomplete.autocomplete(parser)
+    parsedArgs = parser.parse_args()
 
-    name = args[0]
+    # if parsedArgs.h == 0:
+    #     print("not found host name!")
+    #     sys.exit()
+
+    # name = args[0]
+    name = parsedArgs.h
     host = HostStorage.get(name)
     if host is None:
         print('config key %s is not found!' % name)
