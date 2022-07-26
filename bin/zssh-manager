@@ -1,8 +1,12 @@
 #!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
 # -*- Mode: python -*-
 
 import os
 import sys
+
+import argparse
+import argcomplete
 
 parent, bin_dir = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))
 if os.path.exists(os.path.join(parent, 'ssh4plib')):
@@ -26,4 +30,9 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("o", choices=["list", "get", "edit", "remove", "save", "version"])
+    argcomplete.autocomplete(parser)
+    args, unknown = parser.parse_known_args()
+
+    main([args.o] + unknown)

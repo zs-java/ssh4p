@@ -34,5 +34,5 @@ setup(
     ],
     packages=['ssh4plib'],
     scripts=[os.path.join("bin", p) for p in ["zssh", "zscp", "zssh-manager"]],
-    install_requires=["pexpect"]
+    install_requires=["pexpect", "argcomplete"]
 )
